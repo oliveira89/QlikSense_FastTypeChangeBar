@@ -2,4 +2,4 @@
 This extension is a charts base on <a href="https://ecomfe.github.io/echarts-doc/public/en/index.html" target="_blank">eCharts</a>.
 This bar chart is capable of fast type change to table and Line chart.
 
-More functunality will be added in the future.
+More functionality will be added in the future.
