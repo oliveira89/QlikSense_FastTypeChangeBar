@@ -1,4 +1,4 @@
-define(["./echarts"], function(echarts){
+define(["./js/echarts"], function(eCharts){
   return {
     initialProperties: {
       qHyperCubeDef: {
@@ -9,6 +9,11 @@ define(["./echarts"], function(echarts){
           qHeight:5000
         }]
       }
+    },
+    support: {
+      snapshot: true,
+      export: true,
+      exportData: true
     },
     definition:{
       component: "accordion",
@@ -30,10 +35,10 @@ define(["./echarts"], function(echarts){
         myProps: {
           component: "expandable-items",
           type: "items",
-          label: "My Properties",
+          label: "Appearance",
           items: {
             myfontSettings: {
-              label: "Properties",
+              label: "Title",
               type: "items",
               items: {
                 showTitle:{
@@ -46,7 +51,49 @@ define(["./echarts"], function(echarts){
                   label: "Title",
                   type: "string",
                   ref:"custom.title"
+                }
+              }
+            },
+            myFastTypePro: {
+              label: "Fast Type Changing",
+              type: "items",
+              items: {
+                showTable:{
+                  label: "Allow Table",
+                  type: "boolean",
+                  defaultValue: false,
+                  ref:"custom.showTable"
                 },
+                showBar:{
+                  label: "Allow Bar Chart",
+                  type: "boolean",
+                  defaultValue: false,
+                  ref:"custom.showBar"
+                },
+                showLine:{
+                  label: "Allow Line Chart",
+                  type: "boolean",
+                  defaultValue: false,
+                  ref:"custom.showLine"
+                },
+                showRestore:{
+                  label: "Allow Restore to Original",
+                  type: "boolean",
+                  defaultValue: false,
+                  ref:"custom.showRestore"
+                },
+                showSave:{
+                  label: "Allow Save Chart to Image",
+                  type: "boolean",
+                  defaultValue: false,
+                  ref:"custom.showSave"
+                }
+              }
+            },
+            myColourSettings: {
+              label: "Colour",
+              type: "items",
+              items: {
                 colour:{
                   label: "Colour",
                   type: "object",
@@ -65,7 +112,11 @@ define(["./echarts"], function(echarts){
       }
     },
     controller: function($scope, $element){
-      $scope.eBarChart= echarts.init($element[0]);
+      $scope.eBarChart = eCharts.init($element[0]);
+      $scope.eBarChart.on("click", function(item){
+        var elemNumber = item.data.qElemNumber;
+        $scope.backendApi.selectValues(0, [elemNumber], true);
+      });
     },
     resize: function($scope){
       this.$scope.eBarChart.resize();
@@ -73,31 +124,79 @@ define(["./echarts"], function(echarts){
     paint: function($element, layout){
       var xData = [];
       var yData = [];
+      var fastType = [];
+      var todayDate = new Date(Date.now());
       var matrix = layout.qHyperCube.qDataPages[0].qMatrix;
-      matrix.forEach(function(row){
+
+      if (layout.custom.showBar) {
+        fastType.push('bar');
+      };
+      if (layout.custom.showLine) {
+        fastType.push('line');
+      };
+
+      for (var i = 0; i < matrix.length; i++) {
         xData.push({
-          value: row[0].qText
+          value: matrix[i][0].qText
         });
         yData.push({
-          value: row[1].qNum
+          value: matrix[i][1].qNum,
+          qElemNumber: matrix[i][0].qElemNumber
         });
-      })
-      var option = {
-        title:  {
-          show: layout.custom.showTitle,
-          text: layout.custom.title
-        },
-        xAxis: {
-          data: xData
-        },
-        yAxis: {},
-        series: [{
-          type: 'bar',
-          data: yData,
-          animation: true,
-          color: [layout.custom.colour.color]
-        }]
       };
+
+      var option = {
+      title:  {
+        show: layout.custom.showTitle,
+        text: layout.custom.title
+      },
+      xAxis: {
+        data: xData
+      },
+      yAxis: {},
+      series: [{
+        type: 'bar',
+        data: yData,
+        animation: true,
+        color: [layout.custom.colour.color]
+      }],
+      toolbox: {
+          show: true,
+          feature: {
+          dataZoom: {
+                yAxisIndex: false,
+                title:{
+                    zoom: 'Multi Data Zoom',
+                    back: 'Back'
+                }
+            },
+            dataView: {
+                show: layout.custom.showTable,
+                title: 'View data in Table',
+                readOnly: true,
+                lang: ['Chart Raw Data', 'Return to Chart']
+            },
+            magicType: {
+              type: fastType,
+              title: {
+                line: 'Change to Line Chart',
+                bar: 'Change to Bar Chart'
+              }
+            },
+            restore: {
+              show: layout.custom.showRestore,
+              title: 'Restore Chart',
+            },
+            saveAsImage: {
+              show: layout.custom.showSave,
+              title: 'Save Chart as Image',
+              type: 'jpeg',
+              name: ''
+            },
+          }
+        }
+      };
+      option.toolbox.feature.saveAsImage.name = option.title.text + ' ' + todayDate;
       this.$scope.eBarChart.setOption(option);
     }
   }

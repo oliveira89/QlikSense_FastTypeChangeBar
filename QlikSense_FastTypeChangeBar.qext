@@ -1,4 +1,17 @@
 {
   "type": "visualization",
-  "name": "Bar Chart Fast Type Change"
+  "name": "Bar Chart Fast Type Change",
+  "icon": "bar-chart-vertical",
+  "version": "0.02",
+  "description": "This is a chart extension based on eCharts. This bar chart is capable of fast type change to table and Line chart.",
+  "preview": "images/preview.png",
+  "homepage": "https://oliveira.joomla.com/",
+  "author": "Diogo Oliveira",
+  "keywords": "qlik-sense, visualization",
+  "license": "",
+  "repository": "https://github.com/oliveira89/QlikSense_FastTypeChangeBar",
+  "qlikbranch": "http://branch.qlik.com/#!/project/",
+  "dependencies": {
+    "qlik-sense": ">=3.0.x"
+  }
 }
