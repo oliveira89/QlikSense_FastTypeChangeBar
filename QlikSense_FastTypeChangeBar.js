@@ -127,7 +127,9 @@ define(["./js/echarts"], function(eCharts){
       var fastType = [];
       var todayDate = new Date(Date.now());
       var matrix = layout.qHyperCube.qDataPages[0].qMatrix;
-
+      var xLabel = layout.qHyperCube.qDimensionInfo[0].qFallbackTitle;
+      var yLabel = layout.qHyperCube.qMeasureInfo[0].qFallbackTitle;
+      console.log(layout);
       if (layout.custom.showBar) {
         fastType.push('bar');
       };
@@ -140,7 +142,7 @@ define(["./js/echarts"], function(eCharts){
           value: matrix[i][0].qText
         });
         yData.push({
-          value: matrix[i][1].qNum,
+          value: matrix[i][1].qNum.toFixed(2),
           qElemNumber: matrix[i][0].qElemNumber
         });
       };
@@ -151,15 +153,29 @@ define(["./js/echarts"], function(eCharts){
         text: layout.custom.title
       },
       xAxis: {
-        data: xData
+        data: xData,
+        name: xLabel
       },
-      yAxis: {},
+      yAxis: {
+        type: 'value',
+        name: yLabel,
+        axisLabel: {
+          formatter: '{value}'
+        }
+      },
       series: [{
         type: 'bar',
+        name: yLabel,
         data: yData,
         animation: true,
         color: [layout.custom.colour.color]
       }],
+      tooltip : {
+          trigger: 'axis',
+          axisPointer : {
+              triggerOn: 'click'
+          }
+      },
       toolbox: {
           show: true,
           feature: {
@@ -196,6 +212,7 @@ define(["./js/echarts"], function(eCharts){
           }
         }
       };
+      console.log(option);
       option.toolbox.feature.saveAsImage.name = option.title.text + ' ' + todayDate;
       this.$scope.eBarChart.setOption(option);
     }
