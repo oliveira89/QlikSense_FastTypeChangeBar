@@ -1,12 +1,12 @@
-define(["./js/echarts"], function(eCharts){
+define(["./js/echarts"], function(eCharts) {
   return {
     initialProperties: {
       qHyperCubeDef: {
         qInitialDataFetch: [{
-          qTop:0,
-          qLeft:0,
-          qWidth:2,
-          qHeight:5000
+          qTop: 0,
+          qLeft: 0,
+          qWidth: 2,
+          qHeight: 5000
         }]
       }
     },
@@ -15,7 +15,7 @@ define(["./js/echarts"], function(eCharts){
       export: true,
       exportData: true
     },
-    definition:{
+    definition: {
       component: "accordion",
       type: "items",
       items: {
@@ -41,16 +41,16 @@ define(["./js/echarts"], function(eCharts){
               label: "Title",
               type: "items",
               items: {
-                showTitle:{
+                showTitle: {
                   label: "Show Title",
                   type: "boolean",
                   defaultValue: false,
-                  ref:"custom.showTitle"
+                  ref: "custom.showTitle"
                 },
-                title:{
+                title: {
                   label: "Title",
                   type: "string",
-                  ref:"custom.title"
+                  ref: "custom.title"
                 }
               }
             },
@@ -58,35 +58,35 @@ define(["./js/echarts"], function(eCharts){
               label: "Fast Type Changing",
               type: "items",
               items: {
-                showTable:{
+                showTable: {
                   label: "Allow Table",
                   type: "boolean",
                   defaultValue: false,
-                  ref:"custom.showTable"
+                  ref: "custom.showTable"
                 },
-                showBar:{
+                showBar: {
                   label: "Allow Bar Chart",
                   type: "boolean",
                   defaultValue: false,
-                  ref:"custom.showBar"
+                  ref: "custom.showBar"
                 },
-                showLine:{
+                showLine: {
                   label: "Allow Line Chart",
                   type: "boolean",
                   defaultValue: false,
-                  ref:"custom.showLine"
+                  ref: "custom.showLine"
                 },
-                showRestore:{
+                showRestore: {
                   label: "Allow Restore to Original",
                   type: "boolean",
                   defaultValue: false,
-                  ref:"custom.showRestore"
+                  ref: "custom.showRestore"
                 },
-                showSave:{
+                showSave: {
                   label: "Allow Save Chart to Image",
                   type: "boolean",
                   defaultValue: false,
-                  ref:"custom.showSave"
+                  ref: "custom.showSave"
                 }
               }
             },
@@ -94,15 +94,15 @@ define(["./js/echarts"], function(eCharts){
               label: "Colour",
               type: "items",
               items: {
-                colour:{
+                colour: {
                   label: "Colour",
                   type: "object",
                   dualOutput: true,
                   component: "color-picker",
-                  ref:"custom.colour",
+                  ref: "custom.colour",
                   defaultValue: {
-                    "color":"#46c646",
-                    "index":-1
+                    "color": "#46c646",
+                    "index": -1
                   },
                 }
               }
@@ -111,17 +111,17 @@ define(["./js/echarts"], function(eCharts){
         }
       }
     },
-    controller: function($scope, $element){
+    controller: function($scope, $element) {
       $scope.eBarChart = eCharts.init($element[0]);
-      $scope.eBarChart.on("click", function(item){
+      $scope.eBarChart.on("click", function(item) {
         var elemNumber = item.data.qElemNumber;
         $scope.backendApi.selectValues(0, [elemNumber], true);
       });
     },
-    resize: function($scope){
+    resize: function($scope) {
       this.$scope.eBarChart.resize();
     },
-    paint: function($element, layout){
+    paint: function($element, layout) {
       var xData = [];
       var yData = [];
       var fastType = [];
@@ -148,49 +148,49 @@ define(["./js/echarts"], function(eCharts){
       };
 
       var option = {
-      title:  {
-        show: layout.custom.showTitle,
-        text: layout.custom.title
-      },
-      xAxis: {
-        data: xData,
-        name: xLabel
-      },
-      yAxis: {
-        type: 'value',
-        name: yLabel,
-        axisLabel: {
-          formatter: '{value}'
-        }
-      },
-      series: [{
-        type: 'bar',
-        name: yLabel,
-        data: yData,
-        animation: true,
-        color: [layout.custom.colour.color]
-      }],
-      tooltip : {
-          trigger: 'axis',
-          axisPointer : {
-              triggerOn: 'click'
+        title: {
+          show: layout.custom.showTitle,
+          text: layout.custom.title
+        },
+        xAxis: {
+          data: xData,
+          name: xLabel
+        },
+        yAxis: {
+          type: 'value',
+          name: yLabel,
+          axisLabel: {
+            formatter: '{value}'
           }
-      },
-      toolbox: {
+        },
+        series: [{
+          type: 'bar',
+          name: yLabel,
+          data: yData,
+          animation: true,
+          color: [layout.custom.colour.color]
+        }],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            triggerOn: 'click'
+          }
+        },
+        toolbox: {
           show: true,
           feature: {
-          dataZoom: {
-                yAxisIndex: false,
-                title:{
-                    zoom: 'Multi Data Zoom',
-                    back: 'Back'
-                }
+            dataZoom: {
+              yAxisIndex: false,
+              title: {
+                zoom: 'Multi Data Zoom',
+                back: 'Back'
+              }
             },
             dataView: {
-                show: layout.custom.showTable,
-                title: 'View data in Table',
-                readOnly: true,
-                lang: ['Chart Raw Data', 'Return to Chart']
+              show: layout.custom.showTable,
+              title: 'View data in Table',
+              readOnly: true,
+              lang: ['Chart Raw Data', 'Return to Chart']
             },
             magicType: {
               type: fastType,
